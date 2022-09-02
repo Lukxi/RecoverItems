@@ -1,0 +1,7 @@
+name: RecoverItems
+version: '${project.version}'
+main: me.lukxi.recoveritems.RecoverItems
+api-version: 1.19
+
+commands:
+  Test:
