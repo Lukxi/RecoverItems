@@ -39,16 +39,16 @@ import java.util.*;
 
 public class DeadPlayerManager {
 
-    private static final HashMap<Player, DeadPlayer> DeadPlayer = new HashMap();
+    private static final HashMap<UUID, DeadPlayer> DeadPlayer = new HashMap();
 
-    public static HashMap<Player, me.lukxi.recoveritems.npc.DeadPlayer> getDeadPlayer() {
+    public static HashMap<UUID, me.lukxi.recoveritems.npc.DeadPlayer> getDeadPlayer() {
         return DeadPlayer;
     }
 
-    public void createNPC(Player p, String n) {
+    public void createNPC(Player p, String n, ItemStack[] inv, ItemStack[] armor) {
         boolean exist = false;
 
-        if (DeadPlayer.containsKey(p)) {
+        if (DeadPlayer.containsKey(p.getUniqueId())) {
             exist = true;
         }
 
@@ -62,15 +62,15 @@ public class DeadPlayerManager {
             EntityPlayer entityPlayer = new EntityPlayer(server, world, gameProfile, null);
             entityPlayer.b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(),p.getLocation().getPitch());
 
-            DeadPlayer npc = new DeadPlayer(entityPlayer, gameProfile, world, n, p);
-            DeadPlayer.put(p,npc);
+            DeadPlayer npc = new DeadPlayer(entityPlayer, gameProfile, world, n, inv, armor, p.getInventory().getItemInMainHand(), p.getInventory().getItemInOffHand());
+            DeadPlayer.put(p.getUniqueId(),npc);
             sentNPCPacket(p);
 
         }
     }
 
-    private void sentNPCPacket(Player player) {
-        DeadPlayer npc = DeadPlayer.get(player);
+    public void sentNPCPacket(Player player) {
+        DeadPlayer npc = DeadPlayer.get(player.getUniqueId());
         String[] npcSkin = getSkin(player, player.getName());
         npc.getGameProfile().getProperties().clear();
         if (!(npcSkin[0].equalsIgnoreCase("") && npcSkin[1].equalsIgnoreCase(""))) {
@@ -84,7 +84,9 @@ public class DeadPlayerManager {
             connection.a(new PacketPlayOutEntityHeadRotation(npc.getEntityplayer(), (byte) (npc.getEntityplayer().getBukkitYaw() * 256 /360)));
             //connection.a(move);//Pose
             List<Pair<EnumItemSlot, net.minecraft.world.item.ItemStack>> list = new ArrayList<>();
-            ItemStack[] ac = player.getInventory().getArmorContents();
+            ItemStack[] ac = npc.getArmor();
+            ItemStack mainHand = npc.getMainHand();
+            ItemStack offHand = npc.getOffHand();
             if (ac[0] != null){
                 list.add(new Pair<>(EnumItemSlot.c, CraftItemStack.asNMSCopy(player.getInventory().getBoots())));
             }
@@ -94,10 +96,10 @@ public class DeadPlayerManager {
             if (ac[2] != null){
                 list.add(new Pair<>(EnumItemSlot.e, CraftItemStack.asNMSCopy(player.getInventory().getChestplate())));
             }
-            if (player.getInventory().getItemInMainHand() != null || !player.getInventory().getItemInMainHand().getType().equals(Material.AIR)){
+            if (mainHand != null || mainHand.getType().equals(Material.AIR)){
                 list.add(new Pair<>(EnumItemSlot.a, CraftItemStack.asNMSCopy(player.getInventory().getItemInMainHand())));
             }
-            if (player.getInventory().getItemInOffHand() != null || !player.getInventory().getItemInOffHand().getType().equals(Material.AIR)){
+            if (offHand != null || offHand.getType().equals(Material.AIR)){
             list.add(new Pair<>(EnumItemSlot.b, CraftItemStack.asNMSCopy(player.getInventory().getItemInOffHand())));
             }
 
@@ -113,7 +115,7 @@ public class DeadPlayerManager {
     }
 
     public void sentJoinPacket(Player player) {
-        DeadPlayer npc = DeadPlayer.get(player);
+        DeadPlayer npc = DeadPlayer.get(player.getUniqueId());
             PlayerConnection connection = ((CraftPlayer) player).getHandle().b;
             connection.a(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.a, npc.getEntityplayer()));
             connection.a(new PacketPlayOutNamedEntitySpawn(npc.getEntityplayer()));
@@ -166,16 +168,16 @@ public class DeadPlayerManager {
         }
 
         npcs.setNameTagVisibility(NameTagVisibility.ALWAYS);
-        npcs.addEntry(DeadPlayer.get(p).getName());
+        npcs.addEntry(DeadPlayer.get(p.getUniqueId()).getName());
 
     }
 
 
     public void removeNPC(Player p) {
-        EntityPlayer entityPlayer = DeadPlayer.get(p).getEntityplayer();;
+        EntityPlayer entityPlayer = DeadPlayer.get(p.getUniqueId()).getEntityplayer();;
         PlayerConnection connection = ((CraftPlayer) p).getHandle().b;
         connection.a(new PacketPlayOutEntityDestroy(entityPlayer.getBukkitEntity().getEntityId()));
-        DeadPlayer.remove(p);
+        DeadPlayer.remove(p.getUniqueId());
     }
 
     private String[] getSkin(Player p, String skin) {
