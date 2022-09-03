@@ -15,11 +15,11 @@ public class Test implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
-        if (DeadPlayerManager.getDeadPlayer().containsKey(p)){
+        if (DeadPlayerManager.getDeadPlayer().containsKey(p.getUniqueId())){
             new DeadPlayerManager().removeNPC(p);
-            new DeadPlayerManager().createNPC(p, p.getName());
+            new DeadPlayerManager().createNPC(p, p.getName(), p.getInventory().getContents(), p.getInventory().getArmorContents());
         }
-        new DeadPlayerManager().createNPC(p, p.getName());
+        new DeadPlayerManager().createNPC(p, p.getName(), p.getInventory().getContents(), p.getInventory().getArmorContents());
 
         return false;
     }
