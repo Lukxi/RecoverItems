@@ -1,12 +1,11 @@
 package me.lukxi.recoveritems.listener;
 
-import me.lukxi.recoveritems.npc.ClickPacketReader;
-import me.lukxi.recoveritems.npc.DeadPlayer;
 import me.lukxi.recoveritems.npc.DeadPlayerManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerDeath implements Listener {
@@ -29,5 +28,8 @@ public class PlayerDeath implements Listener {
         e.getDrops().clear();
 
     }
+
+
+
 }
 

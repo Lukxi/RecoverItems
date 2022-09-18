@@ -62,7 +62,7 @@ public class DeadPlayerManager {
             EntityPlayer entityPlayer = new EntityPlayer(server, world, gameProfile, null);
             entityPlayer.b(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(),p.getLocation().getPitch());
 
-            DeadPlayer npc = new DeadPlayer(entityPlayer, gameProfile, world, n, inv, armor, p.getInventory().getItemInMainHand(), p.getInventory().getItemInOffHand());
+            DeadPlayer npc = new DeadPlayer(entityPlayer, gameProfile, world, n, inv, armor, p.getInventory().getItemInMainHand(), p.getInventory().getItemInOffHand(),p.getLocation(), p);
             DeadPlayer.put(p.getUniqueId(),npc);
             sentNPCPacket(p);
 

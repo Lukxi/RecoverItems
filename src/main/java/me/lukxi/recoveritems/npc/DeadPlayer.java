@@ -1,9 +1,12 @@
 package me.lukxi.recoveritems.npc;
 
 import com.mojang.authlib.GameProfile;
+import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
+import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.WorldServer;
-import org.bukkit.entity.Item;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 
@@ -13,14 +16,17 @@ public class DeadPlayer {
     private final GameProfile gameProfile;
     private final WorldServer world;
     private final String name;
-    private final ItemStack[] inv;
-    private final ItemStack[] armor;
+    private  ItemStack[] inv;
+    private  ItemStack[] armor;
     private final ItemStack mainHand;
     private final ItemStack offHand;
+    private final Location location;
+    private InventoryContent content;
+    private Player p;
 
 
     public DeadPlayer(EntityPlayer npc, GameProfile gameProfile, WorldServer world, String name, ItemStack[] inv, ItemStack[] armor,
-                      ItemStack mainHand, ItemStack offHand){
+                      ItemStack mainHand, ItemStack offHand, Location location, Player p){
         this.npc = npc;
         this.gameProfile = gameProfile;
         this.world = world;
@@ -29,7 +35,23 @@ public class DeadPlayer {
         this.armor = armor;
         this.mainHand = mainHand;
         this.offHand = offHand;
+        this.location = location;
+        this.p = p;
+        this.content = new InventoryContent();
+        initContent();
+
     }
+
+    public InventoryContent initContent(){
+        int counter = 0;
+        content.clear();
+        for (ItemStack i:inv) {
+            content.addGuiItem(counter, new InventoryItem(i, null));
+            counter++;
+        }
+        return content;
+    }
+
 
     public String getName(){
         return name;
@@ -54,5 +76,22 @@ public class DeadPlayer {
     }
     public ItemStack getOffHand() {
         return offHand;
+    }
+    public Location getLocation() {
+        return location;
+    }
+    public void setInv(ItemStack[] inv) {
+        this.inv = inv;
+    }
+    public void setArmor(ItemStack[] armor) {
+        this.armor = armor;
+    }
+
+    public InventoryContent getContent() {
+        return content;
+    }
+
+    public void setContent(InventoryContent content) {
+        this.content = content;
     }
 }
