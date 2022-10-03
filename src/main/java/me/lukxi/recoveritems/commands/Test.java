@@ -1,7 +1,6 @@
 package me.lukxi.recoveritems.commands;
 
 
-import me.lukxi.recoveritems.npc.DeadPlayerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,11 +14,7 @@ public class Test implements CommandExecutor {
             return true;
         }
         Player p = (Player) sender;
-        if (DeadPlayerManager.getDeadPlayer().containsKey(p.getUniqueId())){
-            new DeadPlayerManager().removeNPC(p);
-            new DeadPlayerManager().createNPC(p, p.getName(), p.getInventory().getContents(), p.getInventory().getArmorContents());
-        }
-        new DeadPlayerManager().createNPC(p, p.getName(), p.getInventory().getContents(), p.getInventory().getArmorContents());
+        p.setHealth(0);
 
         return false;
     }

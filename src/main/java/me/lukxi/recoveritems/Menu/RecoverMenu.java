@@ -5,8 +5,10 @@ import me.lukxi.recoveritems.npc.DeadPlayerManager;
 import me.oxolotel.utils.bukkit.menuManager.menus.*;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryContent;
 import me.oxolotel.utils.bukkit.menuManager.menus.content.InventoryItem;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class RecoverMenu extends CustomMenu implements Closeable, Modifyable, SlotCondition, ShiftClickable {
@@ -45,12 +47,9 @@ public class RecoverMenu extends CustomMenu implements Closeable, Modifyable, Sl
         }
     }
     private boolean checkInvEmpty(ItemStack[] itemStacks){
-        for(int i = 0; i<size; i++){
-            if (itemStacks[i] != null && !itemStacks[i].getType().equals(Material.AIR)){
-                return false;
-            }
-        }
-        return true;
+        Inventory inv = Bukkit.createInventory(null, 54);
+        inv.setContents(itemStacks);
+        return inv.isEmpty();
     }
 
     @Override
